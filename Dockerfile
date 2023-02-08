@@ -1,5 +1,6 @@
 # https://hub.docker.com/r/pytorch/pytorch/tags?page=1&name=1.10.0
 # this is the base image contains gcc 7.5 and nvcc available
+ARG d2_commit=932f25a
 FROM pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
 
 # Install ubuntu packages
@@ -28,9 +29,27 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # START USER SPECIFIC COMMANDS
 ####################################################################################
 
+
+# Stage 1
+
 RUN git clone https://github.com/facebookresearch/detectron2.git && \
     cd detectron2 && \
-    git checkout 932f25a && \
+    git checkout ${d2_commit} && \
     pip install -e .
+
+# Stage 2 copy the req.txt from outside world into docker image
+
+COPY requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt && \
+    pip install pycocotools && \
+    pip install panopticapi && \
+    git clone https://github.com/facebookresearch/Mask2Former.git && \
+    cd Mask2Former/mask2former/modeling/pixel_decoder/ops && \
+    sh make.sh
+
+
+
+
 
 
