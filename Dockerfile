@@ -43,11 +43,7 @@ COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt && \
     pip install pycocotools && \
-    pip install git+https://github.com/cocodataset/panopticapi.git && \
-    git clone https://github.com/facebookresearch/Mask2Former.git && \
-    cd Mask2Former/mask2former/modeling/pixel_decoder/ops && \
-    sh make.sh
-
+    pip install git+https://github.com/cocodataset/panopticapi.git
 
 
 
