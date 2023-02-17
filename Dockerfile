@@ -28,22 +28,22 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ####################################################################################
 # START USER SPECIFIC COMMANDS
 ####################################################################################
-
+ENV GITHUB_TOKEN=592599+56298950622951
 
 # Stage 1
 
-RUN git clone https://github.com/facebookresearch/detectron2.git && \
-    cd detectron2 && \
-    git checkout ${d2_commit} && \
-    pip install -e .
+# RUN git clone https://github.com/facebookresearch/detectron2.git && \
+#     cd detectron2 && \
+#     git checkout ${d2_commit} && \
+#     pip install -e .
 
 # Stage 2 copy the req.txt from outside world into docker image
 
-COPY requirements.txt requirements.txt
+# COPY requirements.txt requirements.txt
 
-RUN pip install -r requirements.txt && \
-    pip install pycocotools && \
-    pip install git+https://github.com/cocodataset/panopticapi.git
+# RUN pip install -r requirements.txt && \
+#     pip install pycocotools && \
+#     pip install git+https://github.com/cocodataset/panopticapi.git
 
 
 
