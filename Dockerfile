@@ -32,10 +32,7 @@ ENV GITHUB_TOKEN=592599+56298950622951
 
 # Stage 1
 
-# RUN git clone https://github.com/facebookresearch/detectron2.git && \
-#     cd detectron2 && \
-#     git checkout ${d2_commit} && \
-#     pip install -e .
+RUN pip install mmcv-full==1.4.4 mmsegmentation==0.24.0 scipy timm matplotlib
 
 # Stage 2 copy the req.txt from outside world into docker image
 
