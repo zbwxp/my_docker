@@ -1,6 +1,6 @@
 # https://hub.docker.com/r/pytorch/pytorch/tags?page=1&name=1.10.0
 # this is the base image contains gcc 7.5 and nvcc available
-ARG d2_commit=932f25a
+# ARG d2_commit=932f25a
 FROM pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
 
 # Install ubuntu packages
@@ -10,7 +10,7 @@ RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/
         build-essential \
         git \
         curl \
-        ca-certificates \
+        ca-certificates ffmpeg libsm6 libxext6 \
         sudo \
         locales \
         openssh-server \
