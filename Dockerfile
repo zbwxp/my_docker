@@ -8,8 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=true
 RUN apk add --no-cache wget bzip2 \
     && addgroup -S anaconda \
     && adduser -D -u 10151 anaconda -G anaconda \
-    && wget --quiet https://repo.continuum.io/miniconda/Miniconda3-$CONDA_VERSION-Linux-x86_64.sh \
-    && mv Miniconda3-$CONDA_VERSION-Linux-x86_64.sh miniconda.sh \
+    && wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && mv Miniconda3-latest-Linux-x86_64.sh miniconda.sh \
     && sh ./miniconda.sh -b -p /opt/conda \
     && rm miniconda.sh \
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
