@@ -44,10 +44,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     chmod +x miniconda.sh && \
     ./miniconda.sh -b -p conda && \
-    rm miniconda.sh && \
-    conda/bin/conda install -y pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge && \
-    conda/bin/conda clean -ya
-RUN conda install -c conda-forge cudatoolkit-dev=11.3 
+    rm miniconda.sh 
+RUN conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
+RUN conda/bin/conda clean -ya
+RUN conda install -c -y conda-forge cudatoolkit-dev=11.3 
 ENV PATH $HOME/conda/bin:$PATH
 RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
