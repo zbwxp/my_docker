@@ -3,8 +3,6 @@ ARG CUDA_VERSION=11.7.1
 FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${UBUNTU_VERSION}
 # An ARG declared before a FROM is outside of a build stage,
 # so it can’t be used in any instruction after a FROM
-ARG USER=reasearch_monster
-ARG PASSWORD=${USER}123$
 ARG PYTHON_VERSION=3.9
 # To use the default value of an ARG declared before the first FROM,
 # use an ARG instruction without a value inside of a build stage:
@@ -15,9 +13,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         git \
+        byobu \
+        zip \
+        wget \
         curl \
         ca-certificates \
-        sudo \
         locales \
         openssh-server \
         ffmpeg \
@@ -37,14 +37,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ####################################################################################
 # START USER SPECIFIC COMMANDS
 ####################################################################################
-
-# Create an user for the app.
-RUN useradd --create-home --shell /bin/bash --groups sudo ${USER}
-RUN echo ${USER}:${PASSWORD} | chpasswd
-USER ${USER}
-ENV HOME /home/${USER}
-WORKDIR $HOME
-
 # Install miniconda (python)
 # Referenced PyTorch's Dockerfile:
 #   https://github.com/pytorch/pytorch/blob/master/docker/pytorch/Dockerfile
@@ -59,22 +51,11 @@ ENV PATH $HOME/conda/bin:$PATH
 RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
     conda init bash
-
-# Expose port 8888 for JupyterLab
-EXPOSE 22 8888
+#######################################################################################
+# Project specific
+#######################################################################################
+# COPY requirements.txt requirements.txt
+# RUN pip install -r requirements.txt 
 
 # Start openssh server
 USER root
-RUN mkdir /run/sshd
-COPY entrypoint.sh /entrypoint.sh
-CMD ["/bin/sh","/entrypoint.sh"]
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
