@@ -14,7 +14,10 @@ RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/
         sudo \
         locales \
         openssh-server \
-        vim && \
+        vim \
+        ffmpeg \
+        libsm6 \
+        libxext6 && \
     # Remove the effect of `apt-get update`
     rm -rf /var/lib/apt/lists/* && \
     # Make the "en_US.UTF-8" locale
