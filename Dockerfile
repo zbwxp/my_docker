@@ -1,29 +1,34 @@
-FROM alpine:latest
-LABEL MAINTAINER="bz"
+ARG UBUNTU_VERSION=20.04
+ARG CUDA_VERSION=11.7.1
+FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${UBUNTU_VERSION}
+# An ARG declared before a FROM is outside of a build stage,
+# so it can’t be used in any instruction after a FROM
+ARG USER=reasearch_monster
+ARG PASSWORD=${USER}123$
+ARG PYTHON_VERSION=3.9
+# To use the default value of an ARG declared before the first FROM,
+# use an ARG instruction without a value inside of a build stage:
+ARG CUDA_VERSION
 
-ENV CONDA_VERSION=latest
-ENV PYTHONDONTWRITEBYTECODE=true
-
-
-RUN apk add --no-cache wget bzip2 \
-    && addgroup -S anaconda \
-    && adduser -D -u 10151 anaconda -G anaconda \
-    && wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && mv Miniconda3-latest-Linux-x86_64.sh miniconda.sh \
-    && sh ./miniconda.sh -b -p /opt/conda \
-    && rm miniconda.sh \
-    && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
-    && echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/anaconda/.profile \
-    && echo "conda activate base" >> /home/anaconda/.profile \
-    && /opt/conda/bin/conda install --freeze-installed tini -y \
-    && find /opt/conda/ -follow -type f -name '*.a' -delete \
-    && find /opt/conda/ -follow -type f -name '*.pyc' -delete \
-    && /opt/conda/bin/conda clean -afy \
-    && chown -R anaconda:anaconda /opt/conda \
-    && apk del wget bzip2
-
-USER anaconda:anaconda
-WORKDIR /home/anaconda/
+# Install ubuntu packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        curl \
+        ca-certificates \
+        sudo \
+        locales \
+        openssh-server \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+        vim && \
+    # Remove the effect of `apt-get update`
+    rm -rf /var/lib/apt/lists/* && \
+    # Make the "en_US.UTF-8" locale
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 
 # Setup timezone
 ENV TZ=Australia/Adelaide
@@ -33,19 +38,43 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # START USER SPECIFIC COMMANDS
 ####################################################################################
 
-# Stage 1
+# Create an user for the app.
+RUN useradd --create-home --shell /bin/bash --groups sudo ${USER}
+RUN echo ${USER}:${PASSWORD} | chpasswd
+USER ${USER}
+ENV HOME /home/${USER}
+WORKDIR $HOME
 
-# RUN pip install mmcv-full==1.4.4 mmsegmentation==0.24.0 scipy timm matplotlib
+# Install miniconda (python)
+# Referenced PyTorch's Dockerfile:
+#   https://github.com/pytorch/pytorch/blob/master/docker/pytorch/Dockerfile
+RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    chmod +x miniconda.sh && \
+    ./miniconda.sh -b -p conda && \
+    rm miniconda.sh && \
+    conda/bin/conda install -y pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit-dev=11.3 -c pytorch -c conda-forge && \
+#    conda/bin/conda install -y pytorch torchvision torchaudio cudatoolkit=${CUDA_VERSION} -c pytorch && \
+    conda/bin/conda clean -ya
+ENV PATH $HOME/conda/bin:$PATH
+RUN touch $HOME/.bashrc && \
+    echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
+    conda init bash
 
-# Stage 2 copy the req.txt from outside world into docker image
+# Expose port 8888 for JupyterLab
+EXPOSE 22 8888
 
-# COPY requirements.txt requirements.txt
-
-# RUN pip install -r requirements.txt && \
-#     pip install pycocotools && \
-#     pip install git+https://github.com/cocodataset/panopticapi.git
-
-
-
-
-
+# Start openssh server
+USER root
+RUN mkdir /run/sshd
+COPY entrypoint.sh /entrypoint.sh
+CMD ["/bin/sh","/entrypoint.sh"]
+Footer
+© 2023 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
