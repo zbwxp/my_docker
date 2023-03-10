@@ -50,9 +50,9 @@ RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
     conda init bash
 Run echo $(which python) && echo $(which pip)
-RUN pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+RUN conda/bin/pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN conda/bin/conda clean -ya
-RUN conda/bin/conda install -c -y conda-forge cudatoolkit-dev=11.1
+RUN conda/bin/conda install -c -y conda-forge cudatoolkit-dev=11.3
 
 #######################################################################################
 # Project specific
