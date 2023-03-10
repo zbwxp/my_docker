@@ -10,7 +10,7 @@ ARG CUDA_VERSION
 
 # Install ubuntu packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         build-essential \
         git \
         byobu \
