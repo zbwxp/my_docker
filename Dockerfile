@@ -46,7 +46,6 @@ RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-L
     ./miniconda.sh -b -p conda && \
     rm miniconda.sh && \
     conda/bin/conda install -y pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit-dev=11.3 -c pytorch -c conda-forge && \
-#    conda/bin/conda install -y pytorch torchvision torchaudio cudatoolkit=${CUDA_VERSION} -c pytorch && \
     conda/bin/conda clean -ya
 ENV PATH $HOME/conda/bin:$PATH
 RUN touch $HOME/.bashrc && \
