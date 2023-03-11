@@ -51,7 +51,9 @@ RUN touch $HOME/.bashrc && \
     conda init bash
 RUN conda create --name proj python=3.9 -y
 Run echo $(which python) && echo $(which pip)
-RUN conda/bin/conda activate proj
+Run source /conda/bin/activate
+Run echo $(which python) && echo $(which pip)
+RUN conda activate proj
 Run echo $(which python) && echo $(which pip)
 RUN conda install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN conda clean -ya
