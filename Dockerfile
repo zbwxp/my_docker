@@ -49,10 +49,11 @@ ENV PATH $HOME/conda/bin:$PATH
 RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
     conda init bash
+RUN conda create --name proj python=3.9 -y && conda activate proj
 Run echo $(which python) && echo $(which pip)
-RUN conda/bin/pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
-RUN conda/bin/conda clean -ya
-RUN conda/bin/conda install -c conda-forge cudatoolkit-dev=11.3  -y
+RUN conda install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
+RUN conda clean -ya
+RUN conda install -c conda-forge cudatoolkit-dev=11.3  -y
 
 #######################################################################################
 # Project specific
