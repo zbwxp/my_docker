@@ -50,12 +50,11 @@ RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
     conda init bash
 RUN conda create --name proj python=3.9 -y
-Run echo $(which python) && echo $(which pip)
-Run source /conda/bin/activate
-Run echo $(which python) && echo $(which pip)
-RUN conda activate proj
-Run echo $(which python) && echo $(which pip)
-RUN conda install torch==1.12.0+cu113 torchvision==0.13.0+cu113 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu113
+# RUN . /conda/bin/activate proj
+SHELL ["conda", "run", "-n", "proj", "/bin/bash", "-c"]
+RUN echo $(which pip) && echo $(which python)
+RUN conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
+# RUN pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN conda clean -ya
 RUN conda install -c conda-forge cudatoolkit-dev=11.3  -y
 
@@ -63,7 +62,7 @@ RUN conda install -c conda-forge cudatoolkit-dev=11.3  -y
 # Project specific
 #######################################################################################
 # COPY requirements.txt requirements.txt
-# RUN pip install -r requirements.txt 
+# RUN pip install -r requirements.txt
 
 # Start openssh server
 USER root
