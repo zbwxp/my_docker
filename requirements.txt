@@ -1,7 +1,2 @@
-cython
-scipy
-shapely
-timm
-h5py
-submitit
-scikit-image
+mmcv-full==1.4.4
+mmsegmentation==0.24.0
