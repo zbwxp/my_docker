@@ -5,7 +5,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${UBUNTU_VERSION}
 # assign your miniconda3 version https://docs.conda.io/en/latest/miniconda.html
 ARG MINICONDA=Miniconda3-py37_23.1.0-1-Linux-x86_64.sh
 # assign your nvcc version https://anaconda.org/conda-forge/cudatoolkit-dev/files?page=2
-ARG CUDA_VERSION=10.2
+ARG CUDA_VERSION=10.1
 
 # Install ubuntu packages
 RUN apt-get update && \
