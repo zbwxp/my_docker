@@ -1,12 +1,11 @@
 ARG UBUNTU_VERSION=20.04
 ARG CUDA_VERSION=11.7.1
+# gcc 9.4.0
 FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${UBUNTU_VERSION}
-# An ARG declared before a FROM is outside of a build stage,
-# so it can’t be used in any instruction after a FROM
-ARG PYTHON_VERSION=3.9
-# To use the default value of an ARG declared before the first FROM,
-# use an ARG instruction without a value inside of a build stage:
-ARG CUDA_VERSION
+# assign your miniconda3 version https://docs.conda.io/en/latest/miniconda.html
+ARG MINICONDA=Miniconda3-py39_23.1.0-1-Linux-x86_64.sh
+# assign your nvcc version https://anaconda.org/conda-forge/cudatoolkit-dev/files?page=2
+ARG CUDA_VERSION=11.3
 
 # Install ubuntu packages
 RUN apt-get update && \
@@ -34,14 +33,13 @@ ENV LANG en_US.utf8
 ENV TZ=Australia/Adelaide
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-
 ####################################################################################
 # START USER SPECIFIC COMMANDS
 ####################################################################################
 # Install miniconda (python)
 # Referenced PyTorch's Dockerfile:
 #   https://github.com/pytorch/pytorch/blob/master/docker/pytorch/Dockerfile
-RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/${MINICONDA} && \
     chmod +x miniconda.sh && \
     ./miniconda.sh -b -p conda && \
     rm miniconda.sh 
@@ -49,14 +47,12 @@ ENV PATH $HOME/conda/bin:$PATH
 RUN touch $HOME/.bashrc && \
     echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
     conda init bash
-RUN conda create --name proj python=3.9 -y
-# RUN . /conda/bin/activate proj
-SHELL ["conda", "run", "-n", "proj", "/bin/bash", "-c"]
-RUN echo $(which pip) && echo $(which python)
+# RUN conda create --name proj python=3.9 -y
+# SHELL ["conda", "run", "-n", "proj", "/bin/bash", "-c"]
+# command from pytorch.org
 RUN conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
-# RUN pip install torch==1.12.0+cu113 torchvision==0.13.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN conda clean -ya
-RUN conda install -c conda-forge cudatoolkit-dev=11.3  -y
+RUN conda install -c conda-forge cudatoolkit-dev=${CUDA_VERSION}  -y
 
 #######################################################################################
 # Project specific
