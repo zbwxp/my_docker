@@ -1,2 +1,4 @@
 mmcv-full==1.4.4
 mmsegmentation==0.24.0
+tmm==0.6.12
+fcvore==0.1.5.post20221221
