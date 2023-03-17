@@ -1,2 +1,1 @@
-mmcv-full==1.4.4
-mmsegmentation==0.24.0
+timm==0.6.12
