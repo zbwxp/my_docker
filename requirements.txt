@@ -1,2 +1,10 @@
-timm==0.8.15.dev0
 omegaconf==2.3.0
+timm==0.8.15.dev0
+mmengine==0.7.0
+mmselfsup==1.0.0rc6
+mmsegmentation==1.0.0rc6
+mmdet==3.0.0rc6
+mmcls==1.0.0rc5
+clearml
+wandb
+GitPython
