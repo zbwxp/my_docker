@@ -1,4 +1,4 @@
-FROM ghcr.io/zbwxp/my_docker:torch1.10.1-cuda11.3-py39-gcc9.4.0
+FROM ghcr.io/zbwxp/my_docker:torch1.13.1-cuda11.7-py39-gcc9.4.0
 
 #######################################################################################
 # Project specific
