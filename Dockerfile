@@ -1,12 +1,16 @@
-ARG UBUNTU_VERSION=20.04
-ARG CUDA_VERSION=11.7.1
-# gcc 9.4.0
-FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${UBUNTU_VERSION}
-# assign your miniconda3 version https://docs.conda.io/en/latest/miniconda.html
-ARG MINICONDA=Miniconda3-py39_23.1.0-1-Linux-x86_64.sh
-# assign your nvcc version https://anaconda.org/conda-forge/cudatoolkit-dev/files?page=2
-ARG CUDA_VERSION=11.7
-
+FROM nvcr.io/nvidia/pytorch:23.03-py3
+# https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel_22-02.html#rel_22-02
+# pytroch 2.0 cuda 12.1.0 ubuntu 20.04
+RUN export DEBIAN_FRONTEND=noninteractive && export TZ=Etc/UTC && apt-get update  \
+    && apt install software-properties-common ca-certificates -y \
+    && add-apt-repository ppa:flexiondotorg/nvtop \
+    && apt install -y nvtop \
+    && apt-get -y install git aria2 byobu \
+    && git config --global http.sslverify "false"  \
+    && apt -y install build-essential \
+    && apt-get install ffmpeg libsm6 libxext6 unzip -y \
+    && pip install openmim \
+    && apt install cmake libncurses5-dev libncursesw5-dev git -y 
 # Install ubuntu packages
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -28,37 +32,6 @@ RUN apt-get update && \
     # Make the "en_US.UTF-8" locale
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
-
 # Setup timezone
 ENV TZ=Australia/Adelaide
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-####################################################################################
-# START USER SPECIFIC COMMANDS
-####################################################################################
-# Install miniconda (python)
-# Referenced PyTorch's Dockerfile:
-#   https://github.com/pytorch/pytorch/blob/master/docker/pytorch/Dockerfile
-RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/${MINICONDA} && \
-    chmod +x miniconda.sh && \
-    ./miniconda.sh -b -p conda && \
-    rm miniconda.sh 
-ENV PATH $HOME/conda/bin:$PATH
-RUN touch $HOME/.bashrc && \
-    echo "export PATH=$HOME/conda/bin:$PATH" >> $HOME/.bashrc && \
-    conda init bash
-# RUN conda create --name proj python=3.9 -y
-# SHELL ["conda", "run", "-n", "proj", "/bin/bash", "-c"]
-# command from pytorch.org
-RUN conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
-RUN conda clean -ya
-RUN conda install -c conda-forge cudatoolkit-dev=${CUDA_VERSION}  -y
-
-#######################################################################################
-# Project specific
-#######################################################################################
-# COPY requirements.txt requirements.txt
-# RUN pip install -r requirements.txt
-
-# Start openssh server
-USER root
