@@ -50,7 +50,7 @@ RUN touch $HOME/.bashrc && \
 # RUN conda create --name proj python=3.9 -y
 # SHELL ["conda", "run", "-n", "proj", "/bin/bash", "-c"]
 # command from pytorch.org
-RUN conda install pytorch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
+RUN conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
 RUN conda clean -ya
 RUN conda install -c conda-forge cudatoolkit-dev=${CUDA_VERSION}  -y
 
