@@ -1,17 +1,17 @@
 omegaconf==2.3.0
-timm==0.8.15.dev0
-mmengine==0.7.0
-mmselfsup==1.0.0rc6
-mmsegmentation==1.0.0rc6
-mmdet==3.0.0rc6
-mmcls==1.0.0rc5
+timm==0.9.5
+mmengine==0.8.4
+mmselfsup==1.0.0
+mmsegmentation==1.1.1
+mmdet==3.1.0
+mmpretrain==1.0.2
 clearml
 wandb
 GitPython
 torchmetrics==0.10.3
 fvcore
 iopath
-xformers==0.0.18
+xformers==0.0.3
 submitit
 --extra-index-url https://pypi.nvidia.com
 cuml-cu11
