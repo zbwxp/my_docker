@@ -1,8 +1,9 @@
-FROM python:3.9-slim
+FROM --platform=linux/arm64/v8 ubuntu:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Australia/Adelaide
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Install necessary dependencies
+RUN apt-get update && \
+    apt-get install -y python3.10 python3-pip
+
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
